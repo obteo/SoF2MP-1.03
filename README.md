@@ -1,129 +1,122 @@
-SoF2MP.exe v1.03 – Patched Version
+SoF2MP.exe v1.03 – Community Patched Version
 
 File: sof2mp.exe
 Version: 1.03
-Author of patch: Teo
+Packaged by: Teo
 Websites:
 
 https://www.yob.at
 
 https://www.sof2.org
 
-This is a custom patched version of Soldier of Fortune II Multiplayer executable, created to improve stability and security and to update masterserver functionality.
+This is a community-patched version of Soldier of Fortune II Multiplayer executable.
+The file combines several existing fixes into a single ready-to-use binary.
+
+I did not create the original fixes — I only merged and packaged them into one working executable.
 
 Description
 
-This patch includes:
+This executable includes multiple known community fixes:
 
-Fix for cl_guid overflow / validation (based on the old sof2-103-guidfix concept)
+cl_guid overflow / validation fix
 
-Additional server-side safety checks for oversized GUID values
-
-Client-side call cleanup (NOP padding and stack fix)
-
-Updated masterserver address
+Quake 3 engine universal directory traversal fix (Windows) v0.1.1 (q3dirtravfix)
 
 getstatus / getinfo fixes
 
-Hex-level modifications only (no source code available)
+Client-side cleanup patch
 
-GUID Fix (Hex-level patch)
-Original bytes
-5f c6 46 0c 01 5e 33 c0 5b 59 c3 5f 8b c6 5e 5b
-59 c3 90 90 90 90 90 90 90 90 90 90 90 90 90 55
-8b 6c 24 08 56 57 8d 45 04 68 b0 b3 55 00 50 e8
-fb ca fe ff 8b 35 84 3c ba 00 83 c4 08 85 f6 8b
-f8
+Updated masterserver address
 
-Patched bytes
-c6 46 0c 01 33 c0 5f 5e 5b 59 c3 8b c6 eb f7 8b
-f8 32 c0 83 c9 ff f2 ae 83 f9 c0 7c 6f eb 20 55
-8b 6c 24 08 56 57 8d 45 04 68 b0 b3 55 00 50 e8
-fb ca fe ff 8b 35 84 3c ba 00 83 c4 08 eb d0 85
-f6
+Stability and security improvements
 
-Purpose of the fix
+Hex-level modifications only (no source code)
 
-The added bytes implement a validation check on the cl_guid value to ensure it does not exceed 64 bytes (its buffer size).
-If a client sends a cl_guid longer than allowed, the server will now correctly return a "Banned" error instead of risking overflow behavior.
+All modifications were applied manually at binary level.
 
-The initial modified bytes are used to gain space for inserting the new validation logic.
+GUID Fix (cl_guid overflow protection)
 
-getstatus / getinfo Fixes (Server-side)
-Modified regions
-00478A34  mov byte ptr [eax+40], cl
-00478A37  lea eax, [esp+20]
-00478A3B  jmp 00478AA6
-...
-00478AA2  xor ecx, ecx
-00478AA4  jmp 00478A34
+This fix introduces a validation check on the cl_guid value to ensure it does not exceed 64 bytes (buffer size).
+If a client sends an oversized cl_guid, the server correctly responds with "Banned", preventing overflow issues.
 
+This behavior is based on the well-known sof2-103-guidfix.
 
-and
+Directory Traversal Fix (Quake 3 Engine)
 
-00478D4F  jmp 00478F61
-...
-00478F61  push eax
-00478F62  xor ecx, ecx
-00478F64  mov byte ptr [eax+40], cl
-00478F67  lea edx, [esp+10]
-00478F6B  jmp 00478D54
+This executable also includes the Quake 3 engine universal directory traversal fix (Windows) v0.1.1
+(commonly known as q3dirtravfix).
 
+This fix protects against directory traversal vulnerabilities in the Quake 3 engine network and file handling logic, which could otherwise allow malicious clients to access unintended paths or trigger unsafe behavior.
 
-These changes improve stability and safety when handling network status/info requests.
+The fix is widely used in the community and is included here unchanged.
+
+getstatus / getinfo Fixes
+
+Server-side fixes that improve handling of network requests and prevent malformed packets from causing instability.
+These are widely used community patches and are included here without functional changes.
 
 Client-side Patch
-Original code
-0x004bb330: push $0x11a3ea0
-...
-0x004bb35c: push %eax
 
-Patched behavior
+The client binary was cleaned by:
 
-The second call block has been replaced by NOP instructions, and stack cleanup was adjusted:
+Removing a redundant call block using NOP padding
 
-Removed redundant call sequence
+Adjusting stack cleanup
 
-Adjusted stack restore (add $0x38, %esp)
+Preserving original behavior while improving stability
 
-Improves consistency and avoids unnecessary operations
-
-This results in cleaner execution without changing gameplay behavior.
+No gameplay behavior is changed.
 
 Masterserver Patch (1fx)
-Original string
+
+The original masterserver:
+
 master.sof2.ravensoft.com
 
-Patched string
+
+was replaced with:
+
 master.1fxmod.org
 
 
-Hex-level modification:
+This allows the game to continue functioning using the community-supported masterserver.
 
-Original:
-6D 61 73 74 65 72 2E 73 6F 66 32 2E 72 61 76 65 6E 73 6F 66 74 2E 63 6F 6D
+Important Note
 
-Patched:
-6D 61 73 74 65 72 2E 31 66 78 6D 6F 64 2E 6F 72 67
+This executable is only a repackaging of existing community fixes.
+No claim is made over the authorship of the original patches.
 
+The goal is preservation, accessibility, and convenience for the SoF2 community.
 
-This allows the game to continue functioning with a modern community-supported masterserver.
+Credits (Original Authors)
 
-Notes
+All credit for the original research and fixes goes to:
 
-This patch was created by manual reverse engineering and hex editing.
+Luigi Auriemma (aluigi)
+https://aluigi.altervista.org/
 
-No original Raven source code was used.
+sof2-103-guidfix
 
-Intended for community preservation and compatibility.
+Quake 3 engine directory traversal fix (q3dirtravfix)
 
-Use at your own responsibility.
+Various security-related engine fixes
 
-Credits
+1fx Mod Team
+https://1fxmod.org/
 
-Patch by Teo
+Masterserver patch
+
+Community maintenance patches
+
+These contributors made the technical work possible.
+This executable only combines their fixes into a single ready-to-use binary.
+Packaging
+
+Executable assembled and distributed by Teo
+
 Websites:
 
 https://www.yob.at
 
 https://www.sof2.org
+
